@@ -29,7 +29,6 @@ export function getCharacterCountIndicatorSize(version: Version, encoding: Encod
 			else if (version <= 26) return 11;
 			else if (version <= 40) return 13;
 			else throw new Error(`Unknown version: ${version}. Only versions 1-40 are supported.`);
-			break;
 		}
 		default:
 			throw new Error(`Unsupported encoding mode: ${encoding}. Only alphanumeric is supported.`);
@@ -58,15 +57,13 @@ export function encodeAlphanumeric(data: string, version: Version, errorCorrecti
 		if (!currValue) throw new Error(`Non-alphanumeric character: ${curr}`);
 		if (next && !nextValue) throw new Error(`Non-alphanumeric character: ${next}`);
 
-		let encodedChunk;
 		// If we have two characters, the value of the first character is multiplied by 45 and added to the value of the second character.
 		// For two characters, the chunk is encoded as a 11-bit binary number.
-		if (next) {
-			encoded.appendBits(currValue * 45 + nextValue, 11);
-		} else encoded.appendBits(currValue, 6);
+		if (next) encoded.appendBits(currValue * 45 + nextValue, 11);
+		else encoded.appendBits(currValue, 6);
 	}
 
-	encoded.appendBits(0b0, 4); // 4-bit terminator
+	encoded.appendBits(0, 4); // 4-bit terminator
 	encoded.padByte();
 
 	return encoded;
