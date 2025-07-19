@@ -18,7 +18,7 @@ export default class BitBuffer {
 	 */
 	private bitPointer: number = 0;
 
-	constructor(initialSize: number = 256) {
+	constructor(initialSize: number = 1) {
 		this.buffer = new Uint8Array(initialSize);
 	}
 
@@ -46,7 +46,7 @@ export default class BitBuffer {
 	 * the value is padded with zeros on the most significant bits.
 	 */
 	appendBits(value: number, length?: number) {
-		const realLength = Math.ceil(Math.log2(value + 1));
+		const realLength = value === 0 ? 1 : value.toString(2).length;
 		if (!length) length = realLength;
 		this.ensureCapacity(length);
 
@@ -61,12 +61,12 @@ export default class BitBuffer {
 		for (let i = realLength - 1; i >= 0; i--) {
 			/**
 			 * This extracts the i-th bit and places it in the current byte at the current bit index:
-			 * - (value >> i) & 1 : extracts the i-th bit, shifting it to the least significant position and
-			 * and erasing others by performing a bitwise AND operation with 0x1.
-			 * - << this.bitIndex : shifts the extracted bit to the correct position within the current byte.
+			 * - Math.floor(value / Math.pow(2, i)) & 1 : extracts the i-th bit using division instead of
+			 * bit shifting to avoid JavaScript's 32-bit signed integer limitations.
+			 * - << (7 - this.bitPointer) : shifts the extracted bit to the correct position within the current byte.
 			 * - |= : performs a bitwise OR operation to set the bit in the current byte.
 			 */
-			this.buffer[this.bytePointer] |= ((value >> i) & 1) << (7 - this.bitPointer);
+			this.buffer[this.bytePointer]! |= (Math.floor(value / Math.pow(2, i)) & 1) << (7 - this.bitPointer);
 			this.bitPointer++;
 			if (this.bitPointer === 8) {
 				this.bytePointer++;
@@ -93,7 +93,7 @@ export default class BitBuffer {
 		this.padByte();
 		let i = 0;
 		while (this.bytePointer < this.buffer.length) {
-			this.buffer[this.bytePointer] = PAD_CODEWORDS[i++];
+			this.buffer[this.bytePointer] = PAD_CODEWORDS[i++]!;
 			this.bytePointer++;
 			i %= 2;
 		}
@@ -107,12 +107,13 @@ export default class BitBuffer {
 		return this.buffer.slice(0, totalBytes);
 	}
 
-	toString() {
+	toString(pretty = false) {
 		let str = '';
 		this.buffer.forEach((byte, i) => {
-			str += byte.toString(2).padStart(8, '0') + ' ';
+			str += byte.toString(2).padStart(8, '0');
+			if (pretty) str += ' ';
 		});
-		str += `(${this.bitPointer})`;
+		if (pretty) str += `(${this.bitPointer})`;
 		return str.trim();
 	}
 }
