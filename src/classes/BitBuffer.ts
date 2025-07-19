@@ -1,4 +1,4 @@
-import { PAD_CODEWORDS } from './constants';
+import { PAD_CODEWORDS } from '../constants';
 
 /**
  * Utility class for building bit sequences of varying length
@@ -97,6 +97,20 @@ export default class BitBuffer {
 			this.bytePointer++;
 			i %= 2;
 		}
+	}
+
+	/**
+	 * Appends the provided data to the end of the BitBuffer
+	 * @param data Another BitBuffer or Uint8Array
+	 */
+	extend(data: BitBuffer | Uint8Array) {
+		data = data instanceof BitBuffer ? data.buffer : data;
+		const newBuffer = new Uint8Array(this.buffer.length + data.length);
+		newBuffer.set(this.buffer);
+		newBuffer.set(data, this.buffer.length);
+		this.bytePointer = newBuffer.length;
+		this.bitPointer = 0;
+		this.buffer = newBuffer;
 	}
 
 	/**

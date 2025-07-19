@@ -1,11 +1,6 @@
 {
 	"name": "qr",
 	"module": "index.ts",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"prepare": "husky"
-	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"husky": "^9.1.7",
@@ -13,5 +8,10 @@
 	},
 	"peerDependencies": {
 		"typescript": "^5.8.3"
-	}
+	},
+	"private": true,
+	"scripts": {
+		"prepare": "husky"
+	},
+	"type": "module"
 }

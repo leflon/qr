@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { encodeAlphanumeric } from '../src/encoding';
-import BitBuffer from '../src/BitBuffer';
+import BitBuffer from '../src/classes/BitBuffer';
 
 test('Alphanumeric', () => {
 	const expected = new BitBuffer(16);

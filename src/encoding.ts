@@ -1,4 +1,4 @@
-import BitBuffer from './BitBuffer';
+import BitBuffer from './classes/BitBuffer';
 import { ALPHANUMERIC_ENCODING_TABLE, DATA_CODEWORDS_BY_TYPE, MODE_INDICATOR } from './constants';
 import { ErrorCorrectionLevel, QRCodeType, Version } from './types';
 
@@ -68,3 +68,5 @@ export function encodeAlphanumeric(data: string, version: Version, errorCorrecti
 
 	return encoded;
 }
+
+encode('AC-42', 'alphanumeric', '1M');

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import BitBuffer from '../src/BitBuffer';
+import BitBuffer from '../src/classes/BitBuffer';
 
 describe('BitBuffer', () => {
 	describe('constructor', () => {
@@ -111,6 +111,31 @@ describe('BitBuffer', () => {
 			buffer.fill();
 			const array = buffer.toArray();
 			expect(array[0]).toBe(0b10100000); // padded with zeros
+		});
+	});
+
+	describe('extend', () => {
+		it('should extend the buffer with another BitBuffer', () => {
+			const buffer1 = new BitBuffer();
+			buffer1.appendBits(0xff, 8);
+			const buffer2 = new BitBuffer();
+			buffer2.appendBits(0b101, 3);
+			buffer1.extend(buffer2);
+			const array = buffer1.toArray();
+			expect(array.length).toBe(2);
+			expect(array[0]).toBe(0xff);
+			expect(array[1]).toBe(0b10100000);
+		});
+
+		it('should extend the buffer with an Uint8Array', () => {
+			const buffer = new BitBuffer();
+			buffer.appendBits(0xff, 8);
+			buffer.extend(new Uint8Array([0b101, 0b110]));
+			const array = buffer.toArray();
+			expect(array.length).toBe(3);
+			expect(array[0]).toBe(0xff);
+			expect(array[1]).toBe(0b00000101);
+			expect(array[2]).toBe(0b00000110);
 		});
 	});
 
