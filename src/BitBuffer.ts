@@ -66,7 +66,7 @@ export default class BitBuffer {
 			 * - << (7 - this.bitPointer) : shifts the extracted bit to the correct position within the current byte.
 			 * - |= : performs a bitwise OR operation to set the bit in the current byte.
 			 */
-			this.buffer[this.bytePointer]! |= (Math.floor(value / Math.pow(2, i)) & 1) << (7 - this.bitPointer);
+			this.buffer[this.bytePointer] |= (Math.floor(value / Math.pow(2, i)) & 1) << (7 - this.bitPointer);
 			this.bitPointer++;
 			if (this.bitPointer === 8) {
 				this.bytePointer++;
@@ -93,7 +93,7 @@ export default class BitBuffer {
 		this.padByte();
 		let i = 0;
 		while (this.bytePointer < this.buffer.length) {
-			this.buffer[this.bytePointer] = PAD_CODEWORDS[i++]!;
+			this.buffer[this.bytePointer] = PAD_CODEWORDS[i++];
 			this.bytePointer++;
 			i %= 2;
 		}
